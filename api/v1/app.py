@@ -17,6 +17,7 @@ def close(self):
 # Register the blueprint
 app.register_blueprint(app_views)
 
+
 # Define a custom error handler for 404 errors
 @app.errorhandler(404)
 def page_not_found(error):
