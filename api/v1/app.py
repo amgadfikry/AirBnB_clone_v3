@@ -14,6 +14,7 @@ def close(self):
     """close storage function after close it"""
     storage.close()
 
+
 # Register the blueprint
 app.register_blueprint(app_views)
 
