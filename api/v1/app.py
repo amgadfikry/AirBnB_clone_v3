@@ -1,5 +1,20 @@
 #!/usr/bin/python3
-""" module to all routes of v1 """
+"""
+API version 1 Flask application.
+
+This module initializes and configures the Flask application for API version 1
+of the AirBnB Clone project. It defines routes, error handlers, CORS settings,
+and registers blueprints for different API views.
+
+Authors:
+    - Dr. Dyrane Alexander <Ogranya.Alex@gmail.com>
+    - Amgad Fikry Mohamed <dr.amgad_sh92@yahoo.com>
+
+Attributes:
+    - app: Flask application instance
+    - CORS: Cross-Origin Resource Sharing for enabling CORS
+"""
+
 from models import storage
 from api.v1.views import app_views
 from flask import Flask, jsonify
@@ -8,13 +23,22 @@ from os import getenv
 
 
 app = Flask('__name__')
+
 # Enable CORS for all routes under /api
 CORS(app, resources={r"/api/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
 def close(self):
-    """close storage function after close it"""
+    """
+    Teardown app context function to close the storage.
+
+    Args:
+        self: The Flask application context.
+
+    Returns:
+        None.
+    """
     storage.close()
 
 
@@ -38,6 +62,7 @@ def page_not_found(error):
 
 
 if __name__ == "__main__":
+    # Check and set the host and port based on environment variables
     if getenv('HBNB_API_HOST'):
         host = getenv('HBNB_API_HOST')
     else:
@@ -48,4 +73,5 @@ if __name__ == "__main__":
     else:
         port = 5000
 
+     # Run the Flask application
     app.run(host=host, port=port, threaded=True)
