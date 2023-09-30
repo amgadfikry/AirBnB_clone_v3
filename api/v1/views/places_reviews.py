@@ -196,7 +196,7 @@ def update_review(review_id):
     if review is None:
         # Raise a 404 error response.
         abort(404)
-    
+
     # Get the request data as JSON
     data = request.get_json()
 
@@ -214,5 +214,5 @@ def update_review(review_id):
     # Save the changes to the Review object
     review.save()
 
-     # Return a JSON representation of the updated Review with status code 200
+    # Return a JSON representation of the updated Review with status code 200
     return (jsonify(review.to_dict()), 200)
