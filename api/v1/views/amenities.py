@@ -2,7 +2,7 @@
 """
 API Routes for Amenity Objects.
 
-This module defines routes for performing RESTful API actions on Amenity objects.
+This module defines routes for performing RESTful API actions: Amenity objects.
 
 Authors:
     - Dr. Dyrane Alexander <Ogranya.Alex@gmail.com>

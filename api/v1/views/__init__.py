@@ -3,9 +3,9 @@
 Initialization of API version 1 views package.
 
 This package contains views for the API version 1 of the AirBnB Clone project.
-It provides endpoints and routes for various functionalities related to managing
-data entities such as states, cities, amenities, users, places, reviews, and amenities
-for accommodations.
+- It provides endpoints and routes for various functionalities
+- related to managing data entities such as states, cities, amenities,
+    users, places, reviews, and amenities for accommodations.
 
 Authors:
     - Dr. Dyrane Alexander <Ogranya.Alex@gmail.com>
@@ -42,4 +42,4 @@ if (__name__ == 'api.v1.views'):
     from api.v1.views.users import *             # Import users view
     from api.v1.views.places import *            # Import places view
     from api.v1.views.places_reviews import *    # Import places_reviews view
-    from api.v1.views.places_amenities import * # Import places_amenities view
+    from api.v1.views.places_amenities import *  # Import places_amenities view

@@ -7,7 +7,7 @@ This module defines routes for performing RESTful API actions on City objects.
 Authors:
     - Dr. Dyrane Alexander <Ogranya.Alex@gmail.com>
     - Amgad Fikry Mohamed <dr.amgad_sh92@yahoo.com>
-    
+
 Routes:
     - /states/<state_id>/cities: Retrieves list of all City objects of a State.
     - /cities/<city_id>: Retrieves a City object by its ID.
