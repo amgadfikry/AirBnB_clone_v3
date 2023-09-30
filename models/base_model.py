@@ -58,7 +58,7 @@ class BaseModel:
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self, exclude_password=True):#set exclude_password to true
+    def to_dict(self, exclude_password=True):  # set exclude_password to true
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
         if "created_at" in new_dict:
@@ -68,7 +68,7 @@ class BaseModel:
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
-        #modify method to exclude the password key when used by FileStorage
+        # modify method to exclude the password key when used by FileStorage
         if exclude_password and "password" in new_dict:
             del new_dict["password"]  # Exclude password key
         return new_dict
