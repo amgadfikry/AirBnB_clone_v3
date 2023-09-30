@@ -147,15 +147,9 @@ def search_places():
         400 error with the message "Not a JSON"
             if the request body is not valid JSON.
     """
-    try:
-        data = request.get_json()
-    except Exception as e:
-        return (jsonify({"error": "Not a JSON"}), 400)
-
+    data = request.get_json()
     if data is None:
-        return (
-            jsonify([place.to_dict() for place in storage.all(Place).values()])
-        )
+        return (jsonify({"error": "Not a JSON"}), 400)
 
     # Get search criteria from the JSON data
     states = data.get("states", [])
@@ -174,9 +168,7 @@ def search_places():
     for state_id in states:
         state = storage.get(State, state_id)
         if state:
-            for city in state.cities:
-                if city.id not in cities:
-                    cities.append(city.id)
+            cities.extend([city.id for city in state.cities])
 
     for city_id in cities:
         city = storage.get(City, city_id)
@@ -185,12 +177,9 @@ def search_places():
 
     # Filter places based on amenities
     if amenities:
-        amenities_objs = [
-            storage.get(Amenity, amenity_id) for amenity_id in amenities
-        ]
         filtered_places = [
             place for place in filtered_places
-            if all(amenity in place.amenities for amenity in amenities_objs)
+            if all(amenity.id in place.amenities_ids for amenity in amenities)
         ]
 
     return (jsonify([place.to_dict() for place in filtered_places]))
