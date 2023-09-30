@@ -9,6 +9,7 @@ from models import storage
 from models.city import City
 from models.place import Place
 from models.user import User
+from models.state import State
 
 
 @app_views.route(
@@ -133,3 +134,51 @@ def update_place(place_id):
             setattr(place, key, value)
     place.save()
     return (jsonify(place.to_dict()), 200)
+
+
+@app_views.route('/places_search', methods=['POST'], strict_slashes=False)
+def search_places():
+    """
+    Retrieves Place objects based on search criteria from JSON request body.
+
+    Returns:
+        JSON representation of the filtered Place objects.
+        400 error with the message "Not a JSON"
+            if the request body is not valid JSON.
+    """
+    data = request.get_json()
+    if data is None:
+        return (jsonify({"error": "Not a JSON"}), 400)
+
+    # Get search criteria from the JSON data
+    states = data.get("states", [])
+    cities = data.get("cities", [])
+    amenities = data.get("amenities", [])
+
+    # Retrieve all places if no search criteria are specified
+    if not states and not cities and not amenities:
+        places = storage.all(Place).values()
+        return jsonify([place.to_dict() for place in places])
+
+    # Filter places based on search criteria
+    filtered_places = []
+
+    # Handle states and cities inclusion
+    for state_id in states:
+        state = storage.get(State, state_id)
+        if state:
+            cities.extend([city.id for city in state.cities])
+
+    for city_id in cities:
+        city = storage.get(City, city_id)
+        if city:
+            filtered_places.extend(city.places)
+
+    # Filter places based on amenities
+    if amenities:
+        filtered_places = [
+            place for place in filtered_places
+            if all(amenity.id in place.amenities_ids for amenity in amenities)
+        ]
+
+    return (jsonify([place.to_dict() for place in filtered_places]))
