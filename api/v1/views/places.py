@@ -169,7 +169,7 @@ def create_place(city_id):
     # Add 'user_id' to the 'data' dictionary.
     user_id = data['user_id']
 
-   # Attempt to retrieve a User object from the storage engine by its ID
+    # Attempt to retrieve a User object from the storage engine by its ID
     user = storage.get(User, user_id)
 
     # Check if the 'user' variable is None, indicating that no User object
