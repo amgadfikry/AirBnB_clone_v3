@@ -1,6 +1,20 @@
 #!/usr/bin/python3
 """
 Handles RESTful API actions for Review objects.
+
+This module provides endpoints to perform CRUD operations on Review objects
+in the API.
+
+Authors:
+    - Dr. Dyrane Alexander <Ogranya.Alex@gmail.com>
+    - Amgad Fikry Mohamed <dr.amgad_sh92@yahoo.com>
+
+Routes:
+- GET /places/<place_id>/reviews: Retrieve all Review objects of a Place.
+- GET /reviews/<review_id>: Retrieve a specific Review object by ID.
+- DELETE /reviews/<review_id>: Delete a specific Review object by ID.
+- POST /places/<place_id>/reviews: Create a new Review object for a Place.
+- PUT /reviews/<review_id>: Update a specific Review object by ID.
 """
 
 from api.v1.views import app_views
@@ -24,10 +38,18 @@ def get_reviews(place_id):
         JSON representation of all Review objects in the Place.
         404 error if the place_id is not linked to any Place object.
     """
+    # Retrieve the Place object using its ID
     place = storage.get(Place, place_id)
+
+    # Check if the Place object exists
     if place is None:
+        # Raise a 404 error response.
         abort(404)
+
+    # Create a list of dictionaries representing linked Review objects
     reviews = [review.to_dict() for review in place.reviews]
+
+    # Return the JSON response for all reviews in the place
     return (jsonify(reviews))
 
 
@@ -43,9 +65,15 @@ def get_review(review_id):
         JSON representation of the Review object.
         404 error if the review_id is not linked to any Review object.
     """
+    # Retrieve the Review object using its ID
     review = storage.get(Review, review_id)
+
+    # Check if the Review object exists
     if review is None:
+        # Raise a 404 error response.
         abort(404)
+
+    # Return the JSON response for the review
     return (jsonify(review.to_dict()))
 
 
@@ -62,11 +90,19 @@ def delete_review(review_id):
         An empty dictionary with the status code 200.
         404 error if the review_id is not linked to any Review object.
     """
+    # Retrieve the Review object using its ID
     review = storage.get(Review, review_id)
+
+    # Check if the Review object exists
     if review is None:
+        # Raise a 404 error response.
         abort(404)
+
+    # Delete the Review object and save the changes
     storage.delete(review)
     storage.save()
+
+    # Return an empty dictionary as a JSON response with status code 200.
     return (jsonify({}))
 
 
@@ -88,23 +124,54 @@ def create_review(place_id):
             if the dictionary doesn't contain the respective keys.
         404 error if the user_id is not linked to any User object.
     """
+    # Retrieve the Place object using its ID
     place = storage.get(Place, place_id)
+
+    # Check if the Place object exists
     if place is None:
+        # Raise a 404 error response.
         abort(404)
+
+    # Get the request data as JSON
     data = request.get_json()
+
+    # Define error messages as variables
+    error_not_json = {"error": "Not a JSON"}
+    error_missing_user_id = {"error": "Missing user_id"}
+    error_missing_text = {"error": "Missing text"}
+
+    # Check if the request data is valid JSON
     if data is None:
-        return (jsonify({"error": "Not a JSON"}), 400)
+        # Return a JSON response with a 400 error and the "Not a JSON" message.
+        return (jsonify(error_not_json), 400)
+
     if 'user_id' not in data:
-        return (jsonify({"error": "Missing user_id"}), 400)
+        # Return a JSON response with a 400 error
+        # and the "Missing user_id" message.
+        return (jsonify(error_missing_user_id), 400)
+
     if 'text' not in data:
-        return (jsonify({"error": "Missing text"}), 400)
+        # Return a JSON response with a 400 error
+        # and the "Missing text" message.
+        return (jsonify(error_missing_text), 400)
+
+    # Retrieve the User object using 'user_id'
     user_id = data['user_id']
     user = storage.get(User, user_id)
+
+    # Check if the User object exists
     if user is None:
+        # Raise a 404 error response.
         abort(404)
+
+    # Add 'place_id' to the data
     data['place_id'] = place_id
+
+    # Create a new Review object and save it
     new_review = Review(**data)
     new_review.save()
+
+    # Return a JSON representation of the new Review with status code 201
     return (jsonify(new_review.to_dict()), 201)
 
 
@@ -122,15 +189,30 @@ def update_review(review_id):
         400 error with the message "Not a JSON"
             if the request body is not valid JSON.
     """
+    # Retrieve the Review object using its ID
     review = storage.get(Review, review_id)
+
+    # Check if the Review object exists
     if review is None:
+        # Raise a 404 error response.
         abort(404)
+    
+    # Get the request data as JSON
     data = request.get_json()
+
+    # Check if the request data is valid JSON
     if data is None:
         return jsonify({"error": "Not a JSON"}), 400
+
+    # Update the Review object with the request data
     for key, value in data.items():
+        # Define keys to ignore in the update
         ignore_keys = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
         if key not in ignore_keys:
             setattr(review, key, value)
+
+    # Save the changes to the Review object
     review.save()
+
+     # Return a JSON representation of the updated Review with status code 200
     return (jsonify(review.to_dict()), 200)
