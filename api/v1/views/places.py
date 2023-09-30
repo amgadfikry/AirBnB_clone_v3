@@ -159,8 +159,8 @@ def search_places():
         amenities = data.get("amenities", [])
 
     # Retrieve all places if no search criteria are specified
-    if not data or not len(data) or (
-        not states and not cities and not amenities):
+    if not data or not len(data) or\
+    (not states and not cities and not amenities):
         places = storage.all(Place).values()
         return jsonify([place.to_dict() for place in places])
 
@@ -188,7 +188,7 @@ def search_places():
         amenities_ids = [amenity.id for amenity in amenities]
         filtered_places = [
             place for place in filtered_places if all(
-                amenity.id in place.amenities_ids for amenity in amenities_ids
-        )]
+                amenity.id in place.amenities_ids for amenity in amenities_ids)
+            ]
 
     return (jsonify([place.to_dict() for place in filtered_places]))
