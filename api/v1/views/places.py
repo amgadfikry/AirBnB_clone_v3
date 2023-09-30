@@ -186,10 +186,19 @@ def search_places():
 
     # Filter places based on amenities
     if amenities:
-        amenities_ids = [amenity.id for amenity in amenities]
-        filtered_places = [
-            place for place in filtered_places if all(
-                amenity.id in place.amenities_ids for amenity in amenities_ids)
-            ]
+        if not filtered_places:
+            filtered_places = storage.all(Place).values()
+        amenities_obj = [
+            storage.get(Amenity, amenity_id) for amenity_id in amenities]
+        filtered_places = [place for place in filtered_places
+                           if all([amenity in place.amenities
+                                   for amenity in amenities_obj])]
 
-    return (jsonify([place.to_dict() for place in filtered_places]))
+    # Create the final list of places without 'amenities' in the response
+    places = []
+    for place in filtered_places:
+        place_dict = place.to_dict()
+        place_dict.pop("amenities", [])
+        places.append(place_dict)
+
+    return (jsonify(places))
