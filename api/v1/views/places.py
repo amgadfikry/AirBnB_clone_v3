@@ -353,18 +353,16 @@ def search_places():
         ]
 
     # Create the final list of places without 'amenities' in the response
-    places = []
-
-    # Iterate through the filtered places and prepare each place's dictionary
-    for place in filtered_places:
-        # Convert the place object to a dictionary representation
-        place_dict = place.to_dict()
-
-        # Remove the 'amenities' key from each place dictionary
-        place_dict.pop("amenities", [])
-
-        # Append the modified place dictionary to the list of places
-        places.append(place_dict)
+    places = [
+        # Iterate through the filtered places and prepare each place's dictionary
+        {
+            k: v  # Keep key-value pairs
+            # Convert the place object to a dictionary representation
+            for k, v in place.to_dict().items()
+            if k != 'amenities'  # Exclude 'amenities' key
+        }
+        for place in filtered_places  # Iterate through filtered places
+    ]
 
     # Return the filtered places as JSON response
-    return (jsonify(places))
+    return jsonify(places)
