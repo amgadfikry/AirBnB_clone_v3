@@ -335,26 +335,34 @@ def search_places():
         # Create a list of Amenity objects corresponding to
         # the selected amenity IDs
         amenities_obj = [
-            storage.get(Amenity, amenity_id) for amenity_id in amenities]
+            # Retrieve Amenity object for each amenity_id
+            storage.get(Amenity, amenity_id)
+            # Iterate through the selected amenity IDs
+            for amenity_id in amenities
+        ]
 
         # Filter places to only include those with all selected amenities
-        filtered_places = [place for place in filtered_places
-                           if all([amenity in place.amenities
-                                   for amenity in amenities_obj])]
+        filtered_places = [
+            place  # Keep the place if it meets the following conditions
+            for place in filtered_places  # Iterate through filtered places
+            if all([
+                # Check if each amenity is in the place's amenities
+                amenity in place.amenities
+                for amenity in amenities_obj  # Iterate through amenities_obj
+            ])
+        ]
 
     # Create the final list of places without 'amenities' in the response
-    places = []
-
-    # Iterate through the filtered places and prepare each place's dictionary
-    for place in filtered_places:
-        # Convert the place object to a dictionary representation
-        place_dict = place.to_dict()
-
-        # Remove the 'amenities' key from each place dictionary
-        place_dict.pop("amenities", [])
-
-        # Append the modified place dictionary to the list of places
-        places.append(place_dict)
+    places = [
+        # Iterate through the filtered places & prepare each place's dictionary
+        {
+            key: value  # Keep key-value pairs
+            # Convert the place object to a dictionary representation
+            for key, value in place.to_dict()
+            if key != "amenities" # Exclude 'amenities' key
+        }
+        for place in filtered_places  # Iterate through filtered places
+    ]
 
     # Return the filtered places as JSON response
     return (jsonify(places))
