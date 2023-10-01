@@ -359,7 +359,7 @@ def search_places():
             key: value  # Keep key-value pairs
             # Convert the place object to a dictionary representation
             for key, value in place.to_dict()
-            if key != "amenities" # Exclude 'amenities' key
+            if key != "amenities"  # Exclude 'amenities' key
         }
         for place in filtered_places  # Iterate through filtered places
     ]
