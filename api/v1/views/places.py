@@ -354,7 +354,7 @@ def search_places():
 
     # Create the final list of places without 'amenities' in the response
     places = [
-        # Iterate through the filtered places and prepare each place's dictionary
+        # Iterate through the filtered places & prepare each place's dictionary
         {
             k: v  # Keep key-value pairs
             # Convert the place object to a dictionary representation
