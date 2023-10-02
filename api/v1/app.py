@@ -2,17 +2,25 @@
 """ module to all routes of v1 """
 from models import storage
 from api.v1.views import app_views
-from flask import Flask
+from flask import Flask, jsonify
 from os import getenv
+from flask_cors import CORS
 
 
 app = Flask('__name__')
+CORS(app, resources={r"/api/v1/*": {"origins": "0.0.0.0"}})
 
 
 @app.teardown_appcontext
 def close(self):
     """close storage function after close it"""
     storage.close()
+
+
+@app.errorhandler(404)
+def error_handle(err):
+    """ function that handle error 404 route"""
+    return jsonify({"error": "Not found"}), 404
 
 
 app.register_blueprint(app_views)
@@ -29,4 +37,4 @@ if __name__ == "__main__":
     else:
         port = 5000
 
-    app.run(host=host, port=port, threaded=True)
+    app.run(host=host, port=port, threaded=True, debug=True)
